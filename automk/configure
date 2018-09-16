@@ -144,5 +144,5 @@ ln -s $_BUILDIR_ .build
 ln -s $_SRCDIR_ $_BUILDIR_/.sources
 
 #exit 0
-make -C $_SRCDIR_ -f $_SRCDIR_/defaults/configure.mk configure
+make -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure
 

@@ -11,19 +11,16 @@
 
 SHELL := /bin/bash
 MAKEFILE := auto.mk
-SUBMAKES :=
 CONFIG_MKFILE := config.mk
-export SHELL MAKEFILE SUBMAKES CONFIG_MKFILE
-
-SUBPATH := $(shell $(_SRCDIR_)/defaults/default.sh subpath_set)
+_OBJDIR_ := $(_BUILDIR_)/$(SUBPATH)
+_INSTALL_PREFIX_ := $(DESTDIR)$(PREFIX)
+export SHELL MAKEFILE CONFIG_MKFILE
+export _OBJDIR_ _INSTALL_PREFIX_
 
 include $(CONFIG_MKFILE)
+TARGETS = all install clean
 
-.PHONY: configure
-configure: $(_SRCDIR_)/.build/$(SUBPATH)/$(MAKEFILE)
-	$(_SRCDIR_)/defaults/default.sh submakes_config $(SUBPATH)
-
-$(_SRCDIR_)/.build/$(SUBPATH)/$(MAKEFILE):
-	$(_SRCDIR_)/defaults/default.sh generate_makefile $(SUBPATH)
-
+.PHONY: $(TARGETS)
+$(TARGETS):
+	$(_SRCDIR_)/automk/default.sh targets_make $@
 

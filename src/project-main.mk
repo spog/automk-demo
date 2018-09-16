@@ -16,7 +16,7 @@ _INSTDIR_ := $(_INSTALL_PREFIX_)/sbin
 SRCS := project-main.c
 
 # include automatic _OBJS_ compilation and SRCS dependencies generation
-include $(_SRCDIR_)/defaults/objs.mk
+include $(_SRCDIR_)/automk/objs.mk
 
 .PHONY: all
 all: $(_OBJDIR_)/$(TARGET)

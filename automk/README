@@ -1,0 +1,42 @@
+The "automk" PROJECT
+========================
+
+--------------------------------------------------------------------
+Copyright (C) 2017 Samo Pogacnik <samo_pogacnik@t-2.net>
+All rights reserved.
+
+The "automk" software project is provided under the terms of the
+BSD 3-Clause license, which is available in the LICENSE file of this
+project.
+--------------------------------------------------------------------
+
+The "u2up.build" project serves as a template for building software projects.
+
+Features:
+=========
+
+Native Build using make directly:
+================
+Configure only:
+--------------
+~/PROJECT$\
+ env BUILDIR=../build PREFIX=/usr/local ./configure 
+
+Compile only:
+------------
+~/PROJECT$\
+ make
+
+Installation:
+------------
+~/PROJECT$\
+ env DESTDIR=$(pwd)/../install make install
+
+Clean:
+------
+~/PROJECT$\
+ make clean
+
+---
+End!
+

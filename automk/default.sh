@@ -37,7 +37,7 @@ function generate_makefile()
 	echo "PREFIX := "$PREFIX >> ${TARGET_MK}
 	echo "export SUBPATH PREFIX" >> ${TARGET_MK}
 	echo >> ${TARGET_MK}
-	echo "include \${_SRCDIR_}/defaults/default.mk" >> ${TARGET_MK}
+	echo "include \${_SRCDIR_}/automk/default.mk" >> ${TARGET_MK}
 #	echo "Done generating ${TARGET_MK}!"
 	echo "Done!"
 }
@@ -55,10 +55,10 @@ function submakes_config()
 			if [ -n "${SUBMAKE}" ] && [ -d "${_SRCDIR_}/${SUBPATH}/${SUBMAKE}" ]; then
 				mkdir -p ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}
 				set +e
-				echo "submakes_config: ${_SRCDIR_}/defaults/configure.mk configure"
-				make -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/defaults/configure.mk configure
+				echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure"
+				make -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/automk/configure.mk configure
 				if [ $? -ne 0 ]; then
-					echo "submakes_config: ${_SRCDIR_}/defaults/configure.mk configure - failed!"
+					echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure - failed!"
 					return 1
 				fi
 				set -e
