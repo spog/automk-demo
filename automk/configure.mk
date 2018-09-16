@@ -23,7 +23,7 @@ include $(CONFIG_MKFILE)
 configure: $(_SRCDIR_)/.build/$(SUBPATH)/$(MAKEFILE)
 	$(_SRCDIR_)/automk/default.sh submakes_config $(SUBPATH)
 
-$(_SRCDIR_)/.build/$(SUBPATH)/$(MAKEFILE):
+$(_SRCDIR_)/.build/$(SUBPATH)/$(MAKEFILE): $(CONFIG_MKFILE)
 	$(_SRCDIR_)/automk/default.sh generate_makefile $(SUBPATH)
 
 
