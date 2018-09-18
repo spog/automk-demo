@@ -16,13 +16,12 @@ _OBJS_ := $(SRCS:%.c=$(_OBJDIR_)/%.o)
 # pull in dependency info for *existing* .o files
 -include $(_OBJS_:.o=.d)
 
-# generate dependency info
-$(_OBJDIR_)/%.d: %.c
-	$(CC) -MM $(CFLAGS) $*.c > $(_OBJDIR_)/$*.d
-	@sed -i 's|^.*:|$(_OBJDIR_)\/&|' $(_OBJDIR_)/$*.d
+$(_OBJDIR_)/%.d:
 
 # compile with dependency info
-$(_OBJDIR_)/%.o: $(_OBJDIR_)/%.d
+$(_OBJDIR_)/%.o:
+	$(CC) -MM $(CFLAGS) $*.c > $(_OBJDIR_)/$*.d
+	@sed -i 's|^.*:|$(_OBJDIR_)\/&|' $(_OBJDIR_)/$*.d
 	$(CC) -c $(CFLAGS) $*.c -o $(_OBJDIR_)/$*.o
 
 endif
