@@ -9,7 +9,7 @@
 # available in the LICENSE file of the "automk" software project.
 #
 
-SUBMAKES := hello.mk src bye.mk
+SUBMAKES := hello.mk src | bye.mk
 export SUBMAKES
 
 CFLAGS := -I$(_SRCDIR_)/include

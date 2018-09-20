@@ -52,19 +52,21 @@ function submakes_config()
 	if [ -n "${SUBMAKES}" ]; then
 		for SUBMAKE in $SUBMAKES;
 		do
-			if [ -n "${SUBMAKE}" ] && [ -d "${_SRCDIR_}/${SUBPATH}/${SUBMAKE}" ]; then
-				mkdir -p ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}
-				set +e
-				echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure"
-				make -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/automk/configure.mk configure
-				if [ $? -ne 0 ]; then
-					echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure - failed!"
+			if [ "x${SUBMAKE}" != "x|" ]; then
+				if [ -n "${SUBMAKE}" ] && [ -d "${_SRCDIR_}/${SUBPATH}/${SUBMAKE}" ]; then
+					mkdir -p ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}
+					set +e
+					echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure"
+					make -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/automk/configure.mk configure
+					if [ $? -ne 0 ]; then
+						echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure - failed!"
+						return 1
+					fi
+					set -e
+				elif [ -z "${SUBMAKE}" ] || [ ! -f "${SUBMAKE}" ]; then
+					echo "submakes_config: ${SUBMAKE} - not available!"
 					return 1
 				fi
-				set -e
-			elif [ -z "${SUBMAKE}" ] || [ ! -f "${SUBMAKE}" ]; then
-				echo "submakes_config: ${SUBMAKE} - not available!"
-				return 1
 			fi
 		done
 	else
@@ -120,8 +122,6 @@ function _targets_submake()
 function targets_make()
 {
 #set -x
-	adir=0
-	amkf=0
 	TARGET=$1
 #	echo "TARGET: "$TARGET
 #	env | grep -E "SUBPATH|SUBMAKES|_SRCDIR_|_BUILDIR_|_OBJDIR_" || true
@@ -129,26 +129,18 @@ function targets_make()
 		unset pids
 		set +em
 		for SUBMAKE in $SUBMAKES; do
-			if [ -d "${_SRCDIR_}/${SUBPATH}/${SUBMAKE}" ]; then
-				if [ $amkf -ne 0 ]; then
-#					echo "PIDS:"$pids
-					_wait_for_mejks $pids
-					unset pids
+			if [ "x${SUBMAKE}" != "x|" ]; then
+				if [ -d "${_SRCDIR_}/${SUBPATH}/${SUBMAKE}" ]; then
+					_targets_subdir $SUBMAKE $TARGET &
+					pids="${pids} "$!
+				else
+					_targets_submake $SUBMAKE $TARGET &
+					pids="${pids} "$!
 				fi
-				_targets_subdir $SUBMAKE $TARGET &
-				pids="${pids} "$!
-				adir=1
-				amkf=0
 			else
-				if [ $adir -ne 0 ]; then
-#					echo "PIDS:"$pids
-					_wait_for_mejks $pids
-					unset pids
-				fi
-				_targets_submake $SUBMAKE $TARGET &
-				pids="${pids} "$!
-				adir=0
-				amkf=1
+#:				echo "PIDS:"$pids
+				_wait_for_mejks $pids
+				unset pids
 			fi
 		done
 #:		echo "PIDS:"$pids
