@@ -11,6 +11,10 @@
 #
 #set -x
 set -e
+#echo "MAKE: "${MAKE} > /dev/stderr
+if [ -n "${MAKEFLAGS}" ]; then
+	MAKEFLAGS="-${MAKEFLAGS}"
+fi
 
 function subpath_set()
 {
@@ -57,7 +61,7 @@ function submakes_config()
 					mkdir -p ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}
 					set +e
 					echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure"
-					make -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/automk/configure.mk configure
+					${MAKE} ${MAKEFLAGS} -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/automk/configure.mk configure
 					if [ $? -ne 0 ]; then
 						echo "submakes_config: ${_SRCDIR_}/automk/configure.mk configure - failed!"
 						return 1
@@ -87,7 +91,7 @@ function _wait_for_mejks()
 	done
 #set +x
 	if [ $ret -ne 0 ]; then
-		echo "make process pid $mejk failed - exiting!"
+		echo "${MAKE} ${MAKEFLAGS}: process pid $mejk failed - exiting!"
 		exit $ret
 	fi
 	return 0
@@ -98,7 +102,7 @@ function _targets_subdir()
 	SUBMAKE=$1
 	TARGET=$2
 	echo "targets_make: ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}/${MAKEFILE} ${TARGET}"
-	make -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}/${MAKEFILE} $TARGET
+	${MAKE} ${MAKEFLAGS} -C ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} -f ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}/${MAKEFILE} $TARGET
 	if [ $? -ne 0 ]; then
 		echo "targets_make: ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}/${MAKEFILE} ${TARGET} - failed!"
 		return 1
@@ -111,7 +115,7 @@ function _targets_submake()
 	SUBMAKE=$1
 	TARGET=$2
 	echo "targets_make: ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} ${TARGET}"
-	make -C ${_SRCDIR_}/${SUBPATH} -f ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} $TARGET
+	${MAKE} ${MAKEFLAGS} -C ${_SRCDIR_}/${SUBPATH} -f ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} $TARGET
 	if [ $? -ne 0 ]; then
 		echo "targets_make: ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} ${TARGET} - failed!"
 		return 1
