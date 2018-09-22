@@ -1,3 +1,6 @@
+MAKE := $(shell which make)
+export MAKE
+
 _SRCDIR_ := $(PWD)
 _BUILDIR_ := $(_SRCDIR_)/.build
 SUBPATH := .

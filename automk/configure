@@ -148,5 +148,6 @@ rm -f $_BUILDIR_/.sources
 ln -s $_SRCDIR_ $_BUILDIR_/.sources
 
 #exit 0
-make -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure
+export MAKE=$(which make)
+$MAKE -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure
 
