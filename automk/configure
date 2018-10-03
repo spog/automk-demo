@@ -147,6 +147,12 @@ ln -s $_BUILDIR_ .build
 rm -f $_BUILDIR_/.sources
 ln -s $_SRCDIR_ $_BUILDIR_/.sources
 
+if [ -n "${ENVFILE}" ] && [ -f "${ENVFILE}" ]; then
+	export ENVFILE
+	echo "Setup build environment via: ${ENVFILE}"
+	source $ENVFILE
+fi
+
 #exit 0
 export MAKE=$(which make)
 $MAKE -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure

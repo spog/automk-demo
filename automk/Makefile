@@ -6,5 +6,5 @@ _BUILDIR_ := $(_SRCDIR_)/.build
 SUBPATH := .
 export _SRCDIR_ _BUILDIR_ SUBPATH
 
-include $(_SRCDIR_)/automk/default.mk
+include $(_BUILDIR_)/auto.mk
 

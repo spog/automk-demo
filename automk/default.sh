@@ -36,10 +36,15 @@ function generate_makefile()
 #	env | grep -E "_SRCDIR_|_BUILDIR_" || true
 	TARGET_MK=${_SRCDIR_}/.build/${SUBPATH}/$MAKEFILE
 	echo "generate_makefile: ${TARGET_MK}"
-	echo "Generated Makefile:"$TARGET_MK > ${TARGET_MK}
+	echo "# Generated Makefile:"$TARGET_MK > ${TARGET_MK}
 	echo "SUBPATH := "$SUBPATH >> ${TARGET_MK}
 	echo "PREFIX := "$PREFIX >> ${TARGET_MK}
-	echo "export SUBPATH PREFIX" >> ${TARGET_MK}
+	if [ "x${SUBPATH}" == "x." ]; then
+		echo "ENVFILE := "${ENVFILE} >> ${TARGET_MK}
+	else
+		echo "ENVFILE := " >> ${TARGET_MK}
+	fi
+	echo "export SUBPATH PREFIX ENVFILE" >> ${TARGET_MK}
 	echo >> ${TARGET_MK}
 	echo "include \${_SRCDIR_}/automk/default.mk" >> ${TARGET_MK}
 #	echo "Done generating ${TARGET_MK}!"
@@ -99,6 +104,7 @@ function _wait_for_mejks()
 
 function _targets_subdir()
 {
+#set -x
 	SUBMAKE=$1
 	TARGET=$2
 	echo "targets_make: ${_SRCDIR_}/.build/${SUBPATH}/${SUBMAKE}/${MAKEFILE} ${TARGET}"
@@ -112,6 +118,7 @@ function _targets_subdir()
 
 function _targets_submake()
 {
+#set -x
 	SUBMAKE=$1
 	TARGET=$2
 	echo "targets_make: ${_SRCDIR_}/${SUBPATH}/${SUBMAKE} ${TARGET}"
@@ -156,6 +163,21 @@ function targets_make()
 		return 1
 	fi
 }
+
+#set -x
+if [ -n "${ENVFILE}" ] && [ "x${1}" == "xtargets_make" ]; then
+	my_cflags=$CFLAGS; unset CFLAGS
+	my_cxxflags=$CXXFLAGS; unset CXXFLAGS
+	my_cppflags=$CPPFLAGS; unset CPPFLAGS
+	my_ldflags=$LDFLAGS; unset LDFLAGS
+	echo "Setup build environment via: ${ENVFILE}"
+	source $ENVFILE
+	export CFLAGS="${CFLAGS} ${my_cflags}"
+	export CXXFLAGS="${CXXFLAGS} ${my_cxxflags}"
+	export CPPFLAGS="${CPPFLAGS} ${my_cppflags}"
+	export LDFLAGS="${LDFLAGS} ${my_ldflags}"
+fi
+#set +x
 
 $@
 exit $?

@@ -9,13 +9,9 @@
 # available in the LICENSE file of the "automk" software project.
 */
 
-#include <stdio.h>
+#ifndef __public_h__
+#define __public_h__
 
-#include <public.h>
-#include "project-main.h"
+#define HELLO "Hello"
 
-int main(int argc, char *argv[])
-{
-	printf("%s %s!\n", HELLO, WORLD);
-}
-
+#endif /*__public_h__*/

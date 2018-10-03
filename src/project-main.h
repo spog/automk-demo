@@ -12,5 +12,6 @@
 #ifndef __project_main_h__
 #define __project_main_h__
 
+#define WORLD "WORLD"
 
 #endif /*__project_main_h__*/
