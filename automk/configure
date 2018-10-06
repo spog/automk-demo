@@ -86,7 +86,7 @@ if [ -f $_BUILDIR_/auto.mk ];
 then
 	echo "WARNING: Build path already configured!"
 #	echo -n " Continue (y/n)? "
-	echo -n " Re-configure (y/n)? "
+	echo -n " Re-configure existing build path (y/n)? "
 	read answer
 	case $answer in
 	y|Y)
@@ -155,5 +155,18 @@ fi
 
 #exit 0
 export MAKE=$(which make)
-$MAKE -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure
+echo "Build environment configuration:"
+echo "- Make: ${MAKE}"
+if [ -z "${CC}" ]; then
+	echo "- C compiler: default native"
+else
+	echo "- C compiler: ${CC}"
+fi
+if [ -z "${CXX}" ]; then
+	echo "- C++ compiler: default native"
+else
+	echo "- C++ compiler: ${CXX}"
+fi
+echo
+$MAKE -B -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure
 
