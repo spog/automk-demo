@@ -184,6 +184,7 @@ fi
 #set +x
 if [ -n "${ENVFILE}" ] && [ "x${1}" == "xtargets_make" ]; then
 echo "Build environment configuration:"
+echo "- ENVFILE: ${ENVFILE}"
 echo "- Make: ${MAKE}"
 if [ -z "${CC}" ]; then
 	echo "- C compiler: default native"
