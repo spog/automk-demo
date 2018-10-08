@@ -12,6 +12,57 @@
 #set -x
 set -e
 
+answer=""
+
+function usage_help ()
+{
+	echo
+	echo -n "Usage: "$(basename  $0)
+	echo " OPTIONS"
+	echo
+	echo "OPTIONS:"
+	echo " [{--answer=|-a=|-y|-n}]"
+	echo " [{--help|-h}]"
+	echo
+	return
+}
+
+while [[ $# > 0 ]]
+do
+#	echo "AAAAAAA:$#"
+#	echo "aaaaaaa:$1"
+	case $1 in
+	--answer=*|-a=*)
+		answer="${1#*=}"
+		;;
+	-y|-n)
+		answer="${1#*-}"
+		;;
+	--help|-h)
+		usage_help
+		exit 0
+		;;
+	*)
+		# comp_home_dir or unknown option
+		if [ "x"$comp_home_dir == "x" ]
+		then
+			if [ -d $1 ]
+			then
+				comp_home_dir=$1
+			else
+				echo "${pre}ERROR: Unknown option: "$1
+				usage_help
+			fi
+		else
+			echo "${pre}ERROR: Unknown option: "$1
+			usage_help
+		fi
+		exit 1
+		;;
+	esac
+	set +e; shift; set -e # to the next token, if any
+done
+
 if [ "x"$SRCDIR != "x" ];
 then
 	cd $SRCDIR
@@ -85,9 +136,12 @@ RECONFIG=n
 if [ -f $_BUILDIR_/auto.mk ];
 then
 	echo "WARNING: Build path already configured!"
-#	echo -n " Continue (y/n)? "
 	echo -n " Re-configure existing build path (y/n)? "
-	read answer
+	if [ -z "${answer}" ]; then
+		read answer
+	else
+		echo "Option provided '${answer}'!"
+	fi
 	case $answer in
 	y|Y)
 		RECONFIG=y
@@ -118,8 +172,12 @@ if [ -d "${_BUILDIR_}" ] && [ "x${RECONFIG}" != "xy" ]; then
 		fi
 	else
 		echo "The build directory is going to be removed and re-created!"
-		echo -n " Remove: ${_BUILDIR_} (y/n)? "
-		read answer
+		echo -n " Remove existing build path: ${_BUILDIR_} (y/n)? "
+		if [ -z "${answer}" ]; then
+			read answer
+		else
+			echo "Option provided '${answer}'!"
+		fi
 		case $answer in
 		y|Y)
 			echo
