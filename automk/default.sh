@@ -40,7 +40,11 @@ function generate_makefile()
 	echo "SUBPATH := "$SUBPATH >> ${TARGET_MK}
 	echo "PREFIX := "$PREFIX >> ${TARGET_MK}
 	if [ "x${SUBPATH}" == "x." ]; then
-		echo "ENVFILE := "${ENVFILE} >> ${TARGET_MK}
+		if [ "x${ENVFILE}" == "x" ]; then
+			echo "ENVFILE := none" >> ${TARGET_MK}
+		else
+			echo "ENVFILE := "${ENVFILE} >> ${TARGET_MK}
+		fi
 	else
 		echo "ENVFILE := " >> ${TARGET_MK}
 	fi
@@ -165,7 +169,7 @@ function targets_make()
 }
 
 #set -x
-if [ -n "${ENVFILE}" ] && [ "x${1}" == "xtargets_make" ]; then
+if [ -n "${ENVFILE}" ] && [ "x${ENVFILE}" != "xnone" ] && [ "x${1}" == "xtargets_make" ]; then
 	my_cflags=$CFLAGS; unset CFLAGS
 	my_cxxflags=$CXXFLAGS; unset CXXFLAGS
 	my_cppflags=$CPPFLAGS; unset CPPFLAGS
@@ -178,6 +182,21 @@ if [ -n "${ENVFILE}" ] && [ "x${1}" == "xtargets_make" ]; then
 	export LDFLAGS="${LDFLAGS} ${my_ldflags}"
 fi
 #set +x
+if [ -n "${ENVFILE}" ] && [ "x${1}" == "xtargets_make" ]; then
+echo "Build environment configuration:"
+echo "- Make: ${MAKE}"
+if [ -z "${CC}" ]; then
+	echo "- C compiler: default native"
+else
+	echo "- C compiler: ${CC}"
+fi
+if [ -z "${CXX}" ]; then
+	echo "- C++ compiler: default native"
+else
+	echo "- C++ compiler: ${CXX}"
+fi
+echo
+fi
 
 $@
 exit $?
