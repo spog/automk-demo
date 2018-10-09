@@ -40,15 +40,15 @@ function generate_makefile()
 	echo "SUBPATH := "$SUBPATH >> ${TARGET_MK}
 	echo "PREFIX := "$PREFIX >> ${TARGET_MK}
 	if [ "x${SUBPATH}" == "x." ]; then
-		if [ "x${ENVFILE}" == "x" ]; then
-			echo "ENVFILE := none" >> ${TARGET_MK}
+		if [ "x${ENVSH}" == "x" ]; then
+			echo "ENVSH := none" >> ${TARGET_MK}
 		else
-			echo "ENVFILE := "${ENVFILE} >> ${TARGET_MK}
+			echo "ENVSH := "${ENVSH} >> ${TARGET_MK}
 		fi
 	else
-		echo "ENVFILE := " >> ${TARGET_MK}
+		echo "ENVSH := " >> ${TARGET_MK}
 	fi
-	echo "export SUBPATH PREFIX ENVFILE" >> ${TARGET_MK}
+	echo "export SUBPATH PREFIX ENVSH" >> ${TARGET_MK}
 	echo >> ${TARGET_MK}
 	echo "include \${_SRCDIR_}/automk/default.mk" >> ${TARGET_MK}
 #	echo "Done generating ${TARGET_MK}!"
@@ -153,12 +153,12 @@ function targets_make()
 					pids="${pids} "$!
 				fi
 			else
-#:				echo "PIDS:"$pids
+#				echo "PIDS:"$pids
 				_wait_for_mejks $pids
 				unset pids
 			fi
 		done
-#:		echo "PIDS:"$pids
+#		echo "PIDS:"$pids
 		_wait_for_mejks $pids
 		unset pids
 		set -em
@@ -169,35 +169,26 @@ function targets_make()
 }
 
 #set -x
-if [ -n "${ENVFILE}" ] && [ "x${ENVFILE}" != "xnone" ] && [ "x${1}" == "xtargets_make" ]; then
+if [ -n "${ENVSH}" ] && [ "x${ENVSH}" != "xnone" ] && [ "x${1}" == "xtargets_make" ]; then
 	my_cflags=$CFLAGS; unset CFLAGS
 	my_cxxflags=$CXXFLAGS; unset CXXFLAGS
 	my_cppflags=$CPPFLAGS; unset CPPFLAGS
 	my_ldflags=$LDFLAGS; unset LDFLAGS
-	echo "Setup build environment via: ${ENVFILE}"
-	source $ENVFILE
+	echo
+	echo "Extra build environment shell script: ${ENVSH}"
+	source $ENVSH
+	echo
 	export CFLAGS="${CFLAGS} ${my_cflags}"
 	export CXXFLAGS="${CXXFLAGS} ${my_cxxflags}"
 	export CPPFLAGS="${CPPFLAGS} ${my_cppflags}"
 	export LDFLAGS="${LDFLAGS} ${my_ldflags}"
 fi
+if [ "x${ENVSH}" == "xnone" ] && [ "x${1}" == "xtargets_make" ]; then
+	echo
+	echo "No extra environment shell script provided to configure!"
+	echo
+fi
 #set +x
-if [ -n "${ENVFILE}" ] && [ "x${1}" == "xtargets_make" ]; then
-echo "Build environment configuration:"
-echo "- ENVFILE: ${ENVFILE}"
-echo "- Make: ${MAKE}"
-if [ -z "${CC}" ]; then
-	echo "- C compiler: default native"
-else
-	echo "- C compiler: ${CC}"
-fi
-if [ -z "${CXX}" ]; then
-	echo "- C++ compiler: default native"
-else
-	echo "- C++ compiler: ${CXX}"
-fi
-echo
-fi
 
 $@
 exit $?

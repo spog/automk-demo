@@ -205,26 +205,19 @@ ln -s $_BUILDIR_ .build
 rm -f $_BUILDIR_/.sources
 ln -s $_SRCDIR_ $_BUILDIR_/.sources
 
-if [ -n "${ENVFILE}" ] && [ -f "${ENVFILE}" ]; then
-	export ENVFILE
-	echo "Setup build environment via: ${ENVFILE}"
-	source $ENVFILE
+if [ -n "${ENVSH}" ] && [ -f "${ENVSH}" ]; then
+	export ENVSH
+	echo
+	echo "Extra build environment shell script: ${ENVSH}"
+	source $ENVSH
+	echo
+else
+	export ENVSH=none
+	echo
+	echo "No extra environment shell script provided to configure!"
+	echo
 fi
 
-#exit 0
 export MAKE=$(which make)
-echo "Build environment configuration:"
-echo "- Make: ${MAKE}"
-if [ -z "${CC}" ]; then
-	echo "- C compiler: default native"
-else
-	echo "- C compiler: ${CC}"
-fi
-if [ -z "${CXX}" ]; then
-	echo "- C++ compiler: default native"
-else
-	echo "- C++ compiler: ${CXX}"
-fi
-echo
 $MAKE -B -C $_SRCDIR_ -f $_SRCDIR_/automk/configure.mk configure
 
