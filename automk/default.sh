@@ -170,6 +170,12 @@ function targets_make()
 
 #set -x
 if [ -n "${ENVSH}" ] && [ "x${1}" == "xtargets_make" ]; then
+	echo "Sources absolute path (_SRCDIR_): "$_SRCDIR_
+	echo "Build absolute path (_BUILDIR_): "$_BUILDIR_
+	echo "Sources relative path (SRCDIR): "$SRCDIR
+	echo "Build relative path (BUILDIR): "$BUILDIR
+	echo "Target absolute installation prefix path (PREFIX): "$PREFIX
+	echo "Additional absolute target installation path prefix (DESTDIR): "$DESTDIR
 	if [ "x${2}" == "xinstall" ]; then
 		rm -f ${_SRCDIR_}/.install
 		ln -s ${_INSTALL_PREFIX_} ${_SRCDIR_}/.install
