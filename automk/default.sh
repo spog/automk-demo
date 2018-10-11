@@ -169,24 +169,29 @@ function targets_make()
 }
 
 #set -x
-if [ -n "${ENVSH}" ] && [ "x${ENVSH}" != "xnone" ] && [ "x${1}" == "xtargets_make" ]; then
-	my_cflags=$CFLAGS; unset CFLAGS
-	my_cxxflags=$CXXFLAGS; unset CXXFLAGS
-	my_cppflags=$CPPFLAGS; unset CPPFLAGS
-	my_ldflags=$LDFLAGS; unset LDFLAGS
-	echo
-	echo "Extra build environment shell script: ${ENVSH}"
-	source $ENVSH
-	echo
-	export CFLAGS="${CFLAGS} ${my_cflags}"
-	export CXXFLAGS="${CXXFLAGS} ${my_cxxflags}"
-	export CPPFLAGS="${CPPFLAGS} ${my_cppflags}"
-	export LDFLAGS="${LDFLAGS} ${my_ldflags}"
-fi
-if [ "x${ENVSH}" == "xnone" ] && [ "x${1}" == "xtargets_make" ]; then
-	echo
-	echo "No extra environment shell script provided to configure!"
-	echo
+if [ -n "${ENVSH}" ] && [ "x${1}" == "xtargets_make" ]; then
+	if [ "x${2}" == "xinstall" ]; then
+		rm -f ${_SRCDIR_}/.install
+		ln -s ${_INSTALL_PREFIX_} ${_SRCDIR_}/.install
+	fi
+	if [ "x${ENVSH}" != "xnone" ]; then
+		my_cflags=$CFLAGS; unset CFLAGS
+		my_cxxflags=$CXXFLAGS; unset CXXFLAGS
+		my_cppflags=$CPPFLAGS; unset CPPFLAGS
+		my_ldflags=$LDFLAGS; unset LDFLAGS
+		echo
+		echo "Extra build environment shell script: ${ENVSH}"
+		source $ENVSH
+		echo
+		export CFLAGS="${CFLAGS} ${my_cflags}"
+		export CXXFLAGS="${CXXFLAGS} ${my_cxxflags}"
+		export CPPFLAGS="${CPPFLAGS} ${my_cppflags}"
+		export LDFLAGS="${LDFLAGS} ${my_ldflags}"
+	else
+		echo
+		echo "No extra environment shell script provided to configure!"
+		echo
+	fi
 fi
 #set +x
 
