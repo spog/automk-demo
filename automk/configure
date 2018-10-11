@@ -137,12 +137,14 @@ if [ -f $_BUILDIR_/auto.mk ];
 then
 	echo "WARNING: Build path already configured!"
 	echo -n " Re-configure existing build path (y/n)? "
+	input=""
 	if [ -z "${answer}" ]; then
-		read answer
+		read input
 	else
 		echo "Option provided '${answer}'!"
+		input=$answer
 	fi
-	case $answer in
+	case $input in
 	y|Y)
 		RECONFIG=y
 		echo
@@ -173,12 +175,14 @@ if [ -d "${_BUILDIR_}" ] && [ "x${RECONFIG}" != "xy" ]; then
 	else
 		echo "The build directory is going to be removed and re-created!"
 		echo -n " Remove existing build path: ${_BUILDIR_} (y/n)? "
+		input=""
 		if [ -z "${answer}" ]; then
-			read answer
+			read input
 		else
 			echo "Option provided '${answer}'!"
+			input=$answer
 		fi
-		case $answer in
+		case $input in
 		y|Y)
 			echo
 			;;

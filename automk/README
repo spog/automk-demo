@@ -35,11 +35,11 @@ It automatically adds out-of-tree build capability to your projects.
 Build commands:
 "Configure":
 ~~~~~~~~~~~~
-project_home$ env BUILDIR=../build PREFIX=/usr/local ./configure
+project_home$ env BUILDIR=./build PREFIX=/usr/local ./configure
 
 or (using cross-toolchain)
 
-project_home$ env BUILDIR=./build PREFIX=/usr/local ENVFILE=/home/samo/Yocto-RPI3/eSDK/environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi ./configure
+project_home$ env BUILDIR=./build PREFIX=/usr/local ENVSH=/home/samo/Yocto-RPI3/eSDK/environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi ./configure
 
 "Build":
 ~~~~~~~~
